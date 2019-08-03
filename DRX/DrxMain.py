@@ -6,9 +6,7 @@ from threading import Thread
 from multiprocessing import Process
 
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
-
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
-
 
 def draw(fileName):
     print("123")
@@ -18,6 +16,9 @@ def draw(fileName):
     DrxLeftDataProc()
     plt.show()
     print("456")
+
+def test():
+    print("test function")
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -51,6 +52,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         plt.show()
         print("456")
 
+    def test(self):
+        print("test function")
+
     def drawDrxPlot(self):
         ClearListData()
         fileName = self.lineEdit_fileName.text().strip()
@@ -59,8 +63,11 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             print(fileName)
             # DrxFileParser(fileName)
             # DrxLeftDataProc()
-            self.p = Process(target=draw,args=(fileName,))
-            self.p.start()
+            self.p = Process(target=self.draw,args=(fileName,))
+            # self.p = Process(target=self.test)
+            # self.p.start()
+            self.p.run()
+
             # plt.show()
         elif os.path.exists(dirName):
             fileList = os.listdir(dirName)
@@ -74,7 +81,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def clearAllFigure(self):
         print("close")
-        self.p.terminate()
+        plt.close('all')
+        # self.p.terminate()
         print("close 2")
 
 

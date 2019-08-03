@@ -8,17 +8,6 @@ from multiprocessing import Process
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
-def draw(fileName):
-    print("123")
-    # time.sleep(1)
-    # plt.close('all')
-    DrxFileParser(fileName)
-    DrxLeftDataProc()
-    plt.show()
-    print("456")
-
-def test():
-    print("test function")
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -32,58 +21,69 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_chooseDir.clicked.connect(self.chooseDir)
         self.pushButton_draw.clicked.connect(self.drawDrxPlot)
         self.pushButton_draw_clear.clicked.connect(self.clearAllFigure)
+        self.pushButton_test.clicked.connect(self.test)
+
+    def test(self):
+        a=self.radioButton_choseFile.isChecked()
+        self.radioButton_choseDir.setChecked(True)
+        print(a)
 
     def chooseFile(self):
         fileName,fileType = QtWidgets.QFileDialog.getOpenFileName(self,"选择文件",self.cwd,"All Files (*);;Text Files (*.txt)")
         print(fileName)
-        self.lineEdit_fileName.setText(fileName)
+        if fileName != "":
+            self.lineEdit_fileName.setText(fileName)
+            self.radioButton_choseFile.setChecked(True)
 
     def chooseDir(self):
         dir = QtWidgets.QFileDialog.getExistingDirectory(self,"选择文件夹",self.cwd)
         print(dir)
-        self.lineEdit_DirName.setText(dir)
+        if dir != "":
+            self.lineEdit_DirName.setText(dir)
+            self.radioButton_choseDir.setChecked(True)
 
-    def draw(self,fileName):
-        print("123")
-        # time.sleep(1)
-        # plt.close('all')
+    def drawFile(self, fileName):
+        print("draw in")
         DrxFileParser(fileName)
         DrxLeftDataProc()
         plt.show()
-        print("456")
+        print("draw out")
 
-    def test(self):
-        print("test function")
+    def drawDirFileList(self,dirName):
+        print("draw in")
+        fileList = os.listdir(dirName)
+        for list in fileList:
+            path = os.path.join(dirName, list)
+            if os.path.isfile(path) and os.path.splitext(path)[1] == ".txt":
+                print(path)
+                DrxFileParser(path)
+        DrxLeftDataProc()
+        plt.show()
+        print("draw out")
 
     def drawDrxPlot(self):
         ClearListData()
+        plt.close('all')
         fileName = self.lineEdit_fileName.text().strip()
         dirName = self.lineEdit_DirName.text().strip()
-        if fileName != "":
+        if fileName != "" and self.radioButton_choseFile.isChecked():
             print(fileName)
-            # DrxFileParser(fileName)
-            # DrxLeftDataProc()
-            self.p = Process(target=self.draw,args=(fileName,))
-            # self.p = Process(target=self.test)
-            # self.p.start()
+            self.p = Process(target=self.drawFile, args=(fileName,))
+            self.p.run()
+        elif os.path.exists(dirName) and self.radioButton_choseDir.isChecked():
+            print(dirName)
+            self.p = Process(target=self.drawDirFileList, args=(dirName,))
             self.p.run()
 
-            # plt.show()
-        elif os.path.exists(dirName):
-            fileList = os.listdir(dirName)
-            for list in fileList:
-                path = os.path.join(dirName,list)
-                if os.path.isfile(path) and os.path.splitext(path)[1] == ".txt":
-                    print(path)
-                    DrxFileParser(path)
-            DrxLeftDataProc()
-            plt.show()
-
     def clearAllFigure(self):
-        print("close")
+        print("close start")
         plt.close('all')
-        # self.p.terminate()
-        print("close 2")
+        print("close end")
+
+    # 界面退出时执行
+    def closeEvent(self, *args, **kwargs):
+        self.clearAllFigure()
+
 
 
 
@@ -91,4 +91,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
     window.show()
+
     sys.exit(app.exec_())
+    sys.exit(test())

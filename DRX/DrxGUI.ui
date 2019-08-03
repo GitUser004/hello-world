@@ -17,8 +17,8 @@
    <widget class="QLineEdit" name="lineEdit_fileName">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>110</y>
+      <x>150</x>
+      <y>80</y>
       <width>431</width>
       <height>31</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="pushButton_chooseFile">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>110</y>
+      <x>600</x>
+      <y>80</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QPushButton" name="pushButton_chooseDir">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>160</y>
+      <x>600</x>
+      <y>130</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QLineEdit" name="lineEdit_DirName">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>160</y>
+      <x>150</x>
+      <y>130</y>
       <width>431</width>
       <height>31</height>
      </rect>
@@ -66,8 +66,8 @@
    <widget class="QPushButton" name="pushButton_draw">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>220</y>
+      <x>410</x>
+      <y>190</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -79,8 +79,8 @@
    <widget class="QPushButton" name="pushButton_draw_clear">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>270</y>
+      <x>410</x>
+      <y>240</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -92,8 +92,8 @@
    <widget class="QCheckBox" name="checkBox_onduration">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>220</y>
+      <x>190</x>
+      <y>190</y>
       <width>151</width>
       <height>29</height>
      </rect>
@@ -108,8 +108,8 @@
    <widget class="QCheckBox" name="checkBox_Inactivity">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>270</y>
+      <x>190</x>
+      <y>240</y>
       <width>151</width>
       <height>29</height>
      </rect>
@@ -121,6 +121,48 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_test">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>190</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>测试</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_choseFile">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>90</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_choseDir">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>140</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -128,7 +170,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

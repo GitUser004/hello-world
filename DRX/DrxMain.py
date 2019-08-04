@@ -3,6 +3,7 @@ from multiprocessing import Process
 import matplotlib.pyplot as plt
 from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
 from PyQt5 import QtWidgets, uic
+from DrxDefine import *
 
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -14,17 +15,69 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         Ui_MainWindow.__init__(self)
 
         self.cwd = os.getcwd()
+        self.spinTtiTimeChangeFlag = False
+        self.spinFrameSlotChangeFlag = False
+        self.spinRadioTimeChangeFlag = False
 
         self.setupUi(self)
         self.pushButton_chooseFile.clicked.connect(self.chooseFile)
         self.pushButton_chooseDir.clicked.connect(self.chooseDir)
         self.pushButton_draw.clicked.connect(self.drawDrxPlot)
         self.pushButton_draw_clear.clicked.connect(self.clearAllFigure)
+        self.spinBox_TtiTime.valueChanged.connect(self.spinTtiTime)
+        self.spinBox_Frame.valueChanged.connect(self.spinFrameSlot)
+        self.spinBox_Slot.valueChanged.connect(self.spinFrameSlot)
+        self.spinBox_RadioTime.valueChanged.connect(self.spnRadioTime)
         self.pushButton_test.clicked.connect(self.test)
 
     def test(self):
         a=self.checkBox_onduration.isChecked()
-        print(a)
+        b=self.spinBox_TtiTime.value()
+        print(a,b)
+
+    def spinTtiTime(self):
+        if not self.spinTtiTimeChangeFlag:
+            ttiTime = self.spinBox_TtiTime.value()
+            print("TTI time = %d" %(ttiTime))
+            frame = ttiTime//SLOT_PER_FRAME
+            slot = ttiTime%SLOT_PER_FRAME
+            radioTime = (frame<<8) + slot
+
+            self.spinFrameSlotChangeFlag = True
+            self.spinRadioTimeChangeFlag = True
+            self.spinBox_Frame.setValue(frame)
+            self.spinBox_Slot.setValue(slot)
+            self.spinBox_RadioTime.setValue(radioTime)
+        self.spinTtiTimeChangeFlag = False
+
+    def spinFrameSlot(self):
+        if not self.spinFrameSlotChangeFlag:
+            frame = self.spinBox_Frame.value()
+            slot = self.spinBox_Slot.value()
+            print("Frame = %d, Slot = %d" %(frame,slot))
+            ttiTime = frame*SLOT_PER_FRAME + slot
+            radioTime = (frame<<8) + slot
+
+            self.spinTtiTimeChangeFlag = True
+            self.spinRadioTimeChangeFlag = True
+            self.spinBox_TtiTime.setValue(ttiTime)
+            self.spinBox_RadioTime.setValue(radioTime)
+        self.spinFrameSlotChangeFlag = False
+
+    def spnRadioTime(self):
+        if not self.spinRadioTimeChangeFlag:
+            radioTime = self.spinBox_RadioTime.value()
+            print("Radio time = %d" %(radioTime))
+            frame = radioTime>>8
+            slot = radioTime & 0xFF
+            ttiTime = frame*SLOT_PER_FRAME + slot
+
+            self.spinTtiTimeChangeFlag = True
+            self.spinFrameSlotChangeFlag = True
+            self.spinBox_TtiTime.setValue(ttiTime)
+            self.spinBox_Frame.setValue(frame)
+            self.spinBox_Slot.setValue(slot)
+        self.spinRadioTimeChangeFlag = False
 
     def chooseFile(self):
         fileName,fileType = QtWidgets.QFileDialog.getOpenFileName(self,"选择文件",self.cwd,"All Files (*);;Text Files (*.txt)")

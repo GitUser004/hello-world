@@ -1,9 +1,8 @@
-import sys,os,time
-from PyQt5 import QtWidgets, uic
-from DrxProc import DrxFileParser,DrxLeftDataProc,ClearListData
-import matplotlib.pyplot as plt
-from threading import Thread
+import os,sys
 from multiprocessing import Process
+import matplotlib.pyplot as plt
+from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
+from PyQt5 import QtWidgets, uic
 
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -24,8 +23,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_test.clicked.connect(self.test)
 
     def test(self):
-        a=self.radioButton_choseFile.isChecked()
-        self.radioButton_choseDir.setChecked(True)
+        a=self.checkBox_onduration.isChecked()
         print(a)
 
     def chooseFile(self):
@@ -44,8 +42,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def drawFile(self, fileName):
         print("draw in")
-        DrxFileParser(fileName)
-        DrxLeftDataProc()
+        DrxFileParser(fileName,self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
+        DrxLeftDataProc(self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
         plt.show()
         print("draw out")
 
@@ -56,8 +54,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             path = os.path.join(dirName, list)
             if os.path.isfile(path) and os.path.splitext(path)[1] == ".txt":
                 print(path)
-                DrxFileParser(path)
-        DrxLeftDataProc()
+                DrxFileParser(path,self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
+        DrxLeftDataProc(self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
         plt.show()
         print("draw out")
 
@@ -91,6 +89,4 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
     window.show()
-
     sys.exit(app.exec_())
-    sys.exit(test())

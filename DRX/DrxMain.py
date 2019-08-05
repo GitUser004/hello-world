@@ -5,6 +5,7 @@ from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
 from PyQt5 import QtWidgets, uic
 from DrxDefine import *
 
+
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -134,8 +135,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     # 界面退出时执行
     def closeEvent(self, *args, **kwargs):
         self.clearAllFigure()
-
-
 
 
 if __name__ == "__main__":

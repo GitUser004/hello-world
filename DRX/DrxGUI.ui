@@ -72,7 +72,7 @@
    <widget class="QPushButton" name="pushButton_draw">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>600</x>
       <y>190</y>
       <width>91</width>
       <height>31</height>
@@ -85,7 +85,7 @@
    <widget class="QPushButton" name="pushButton_draw_clear">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>600</x>
       <y>240</y>
       <width>91</width>
       <height>31</height>
@@ -130,8 +130,8 @@
    <widget class="QPushButton" name="pushButton_test">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>190</y>
+      <x>700</x>
+      <y>80</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -172,7 +172,7 @@
    <widget class="QLabel" name="label_TtiTime">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>180</x>
       <y>310</y>
       <width>91</width>
       <height>16</height>
@@ -185,7 +185,7 @@
    <widget class="QLabel" name="label_FrameSlot">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>340</x>
       <y>310</y>
       <width>91</width>
       <height>16</height>
@@ -198,7 +198,7 @@
    <widget class="QLabel" name="label_RadioTime">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>500</x>
       <y>310</y>
       <width>91</width>
       <height>16</height>
@@ -211,7 +211,7 @@
    <widget class="QSpinBox" name="spinBox_TtiTime">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>170</x>
       <y>330</y>
       <width>111</width>
       <height>22</height>
@@ -224,7 +224,7 @@
    <widget class="QSpinBox" name="spinBox_Frame">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>330</x>
       <y>330</y>
       <width>51</width>
       <height>22</height>
@@ -237,7 +237,7 @@
    <widget class="QSpinBox" name="spinBox_Slot">
     <property name="geometry">
      <rect>
-      <x>480</x>
+      <x>390</x>
       <y>330</y>
       <width>51</width>
       <height>22</height>
@@ -250,7 +250,7 @@
    <widget class="QSpinBox" name="spinBox_RadioTime">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>490</x>
       <y>330</y>
       <width>111</width>
       <height>22</height>
@@ -258,6 +258,54 @@
     </property>
     <property name="maximum">
      <number>999999999</number>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_UlReTx">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>190</y>
+      <width>151</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>UlReTx</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_DlReTx">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>240</y>
+      <width>151</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DlReTx</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser_output">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>370</y>
+      <width>761</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAsNeeded</enum>
+    </property>
+    <property name="lineWrapMode">
+     <enum>QTextEdit::NoWrap</enum>
     </property>
    </widget>
   </widget>

@@ -1,9 +1,12 @@
 import os,sys
-from multiprocessing import Process
 import matplotlib.pyplot as plt
-from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
+from multiprocessing import Process
 from PyQt5 import QtWidgets, uic
+import win32api,win32con
+
 from DrxDefine import *
+from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
+
 
 
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
@@ -34,7 +37,13 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def test(self):
         a=self.checkBox_onduration.isChecked()
         b=self.spinBox_TtiTime.value()
+        fileName = self.lineEdit_fileName.text().strip()
+        dirName = self.lineEdit_DirName.text().strip()
         print(a,b)
+        c=os.path.isfile(fileName)
+        d=os.path.isdir(dirName)
+        print(c,d)
+        self.textBrowser_output.append("124")
 
     def spinTtiTime(self):
         if not self.spinTtiTimeChangeFlag:
@@ -82,22 +91,22 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def chooseFile(self):
         fileName,fileType = QtWidgets.QFileDialog.getOpenFileName(self,"选择文件",self.cwd,"All Files (*);;Text Files (*.txt)")
-        print(fileName)
         if fileName != "":
             self.lineEdit_fileName.setText(fileName)
             self.radioButton_choseFile.setChecked(True)
+            self.cwd = os.path.dirname(fileName)
 
     def chooseDir(self):
         dir = QtWidgets.QFileDialog.getExistingDirectory(self,"选择文件夹",self.cwd)
-        print(dir)
         if dir != "":
             self.lineEdit_DirName.setText(dir)
             self.radioButton_choseDir.setChecked(True)
+            self.cwd = dir
 
     def drawFile(self, fileName):
         print("draw in")
-        DrxFileParser(fileName,self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
-        DrxLeftDataProc(self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
+        DrxFileParser(fileName,self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked(),self.checkBox_UlReTx.isChecked(),self.checkBox_DlReTx.isChecked(),self.textBrowser_output)
+        DrxLeftDataProc(self.textBrowser_output)
         plt.show()
         print("draw out")
 
@@ -108,8 +117,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             path = os.path.join(dirName, list)
             if os.path.isfile(path) and os.path.splitext(path)[1] == ".txt":
                 print(path)
-                DrxFileParser(path,self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
-        DrxLeftDataProc(self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked())
+                self.textBrowser_output.append(path)
+                DrxFileParser(path,self.checkBox_onduration.isChecked(),self.checkBox_Inactivity.isChecked(),self.checkBox_UlReTx.isChecked(),self.checkBox_DlReTx.isChecked(),self.textBrowser_output)
+        DrxLeftDataProc(self.textBrowser_output)
         plt.show()
         print("draw out")
 
@@ -118,18 +128,27 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         plt.close('all')
         fileName = self.lineEdit_fileName.text().strip()
         dirName = self.lineEdit_DirName.text().strip()
-        if fileName != "" and self.radioButton_choseFile.isChecked():
-            print(fileName)
-            self.p = Process(target=self.drawFile, args=(fileName,))
-            self.p.run()
-        elif os.path.exists(dirName) and self.radioButton_choseDir.isChecked():
-            print(dirName)
-            self.p = Process(target=self.drawDirFileList, args=(dirName,))
-            self.p.run()
+        if self.radioButton_choseFile.isChecked():
+            if not os.path.isfile(fileName):
+                win32api.MessageBox(0, "文件不存在", "警告", win32con.MB_ICONWARNING)
+            else:
+                print(fileName)
+                self.textBrowser_output.append(fileName)
+                self.p = Process(target=self.drawFile, args=(fileName,))
+                self.p.run()
+        elif self.radioButton_choseDir.isChecked():
+            if not os.path.exists(dirName):
+                win32api.MessageBox(0, "文件夹不存在", "警告", win32con.MB_ICONWARNING)
+            else:
+                print(dirName)
+                self.textBrowser_output.append(dirName)
+                self.p = Process(target=self.drawDirFileList, args=(dirName,))
+                self.p.run()
 
     def clearAllFigure(self):
         print("close start")
         plt.close('all')
+        self.textBrowser_output.setText("")
         print("close end")
 
     # 界面退出时执行

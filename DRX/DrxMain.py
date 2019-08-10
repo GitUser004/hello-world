@@ -4,9 +4,9 @@ from multiprocessing import Process
 from PyQt5 import QtWidgets, uic
 import win32api,win32con
 
+from AboutGui import About
 from DrxDefine import *
 from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
-
 
 
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
@@ -32,18 +32,10 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.spinBox_Frame.valueChanged.connect(self.spinFrameSlot)
         self.spinBox_Slot.valueChanged.connect(self.spinFrameSlot)
         self.spinBox_RadioTime.valueChanged.connect(self.spnRadioTime)
+        self.menu_help.triggered[QtWidgets.QAction].connect(self.helpMenu)
         self.pushButton_test.clicked.connect(self.test)
 
-    def test(self):
-        a=self.checkBox_onduration.isChecked()
-        b=self.spinBox_TtiTime.value()
-        fileName = self.lineEdit_fileName.text().strip()
-        dirName = self.lineEdit_DirName.text().strip()
-        print(a,b)
-        c=os.path.isfile(fileName)
-        d=os.path.isdir(dirName)
-        print(c,d)
-        self.textBrowser_output.append("124")
+        self.statusbar.showMessage("drx状态解析")
 
     def spinTtiTime(self):
         if not self.spinTtiTimeChangeFlag:
@@ -59,6 +51,26 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.spinBox_Slot.setValue(slot)
             self.spinBox_RadioTime.setValue(radioTime)
         self.spinTtiTimeChangeFlag = False
+
+
+    def helpMenu(self,q):
+        self.statusbar.showMessage(q.text())
+        if q.text() == "关于":
+            app = QtWidgets.QApplication(sys.argv)
+            window = About()
+            window.show()
+            # app.exec_()
+
+    def test(self):
+        a=self.checkBox_onduration.isChecked()
+        b=self.spinBox_TtiTime.value()
+        fileName = self.lineEdit_fileName.text().strip()
+        dirName = self.lineEdit_DirName.text().strip()
+        print(a,b)
+        c=os.path.isfile(fileName)
+        d=os.path.isdir(dirName)
+        print(c,d)
+        self.textBrowser_output.append("124")
 
     def spinFrameSlot(self):
         if not self.spinFrameSlotChangeFlag:

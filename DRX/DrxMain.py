@@ -56,10 +56,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def helpMenu(self,q):
         self.statusbar.showMessage(q.text())
         if q.text() == "关于":
-            app = QtWidgets.QApplication(sys.argv)
-            window = About()
-            window.show()
-            # app.exec_()
+            self.aboutGui = About()
+            self.aboutGui.show()
 
     def test(self):
         a=self.checkBox_onduration.isChecked()

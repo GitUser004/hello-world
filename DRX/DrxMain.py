@@ -17,13 +17,15 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
+        self.setupUi(self)
 
-        self.cwd = os.getcwd()
+        self.cwd = os.getcwd() + "/log"
+        self.aboutGui = About()
+
         self.spinTtiTimeChangeFlag = False
         self.spinFrameSlotChangeFlag = False
         self.spinRadioTimeChangeFlag = False
 
-        self.setupUi(self)
         self.pushButton_chooseFile.clicked.connect(self.chooseFile)
         self.pushButton_chooseDir.clicked.connect(self.chooseDir)
         self.pushButton_draw.clicked.connect(self.drawDrxPlot)
@@ -56,7 +58,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def helpMenu(self,q):
         self.statusbar.showMessage(q.text())
         if q.text() == "关于":
-            self.aboutGui = About()
+            # self.aboutGui = About()
             self.aboutGui.show()
 
     def test(self):

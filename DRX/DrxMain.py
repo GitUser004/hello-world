@@ -5,6 +5,7 @@ from PyQt5 import QtWidgets, uic
 import win32api,win32con
 
 from AboutGui import About
+from CalcOndurationGui import OndurationGui
 from DrxDefine import *
 from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
 
@@ -21,6 +22,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.cwd = os.getcwd() + "/log"
         self.aboutGui = About()
+        self.ondurationGui = OndurationGui()
 
         self.spinTtiTimeChangeFlag = False
         self.spinFrameSlotChangeFlag = False
@@ -35,6 +37,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.spinBox_Slot.valueChanged.connect(self.spinFrameSlot)
         self.spinBox_RadioTime.valueChanged.connect(self.spnRadioTime)
         self.menu_help.triggered[QtWidgets.QAction].connect(self.helpMenu)
+        self.menu_file.triggered[QtWidgets.QAction].connect(self.fileMenu)
         self.pushButton_test.clicked.connect(self.test)
 
         self.statusbar.showMessage("drx状态解析")
@@ -58,8 +61,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def helpMenu(self,q):
         self.statusbar.showMessage(q.text())
         if q.text() == "关于":
-            # self.aboutGui = About()
             self.aboutGui.show()
+
+    def fileMenu(self,q):
+        self.statusbar.showMessage(q.text())
+        if q.text() == "Onduration计算工具":
+            self.ondurationGui.show()
 
     def test(self):
         a=self.checkBox_onduration.isChecked()

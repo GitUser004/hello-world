@@ -43,6 +43,7 @@ def ProcFileActivityRange(line,Regex,list,tmpList):
             list.append(value)
 
 def DrawList(type,list,value,activeY,activeValue,ax):
+    global ondurationTmpList,inactivityTmpList,ulRetxTmpList,dlRetxTmpList
     if len(list)>1:
         Y = [value]*1024*20
         value_Y = value + 0.1
@@ -52,12 +53,21 @@ def DrawList(type,list,value,activeY,activeValue,ax):
             # print(startFrame,startSlot,endFrame,endSlot)
             startIndex = int(startFrame) * SLOT_PER_FRAME + int(startSlot)
             endIndex = int(endFrame) * SLOT_PER_FRAME + int(endSlot)
-            Y[startIndex:endIndex+1] = [value_Y]*(endIndex+1-startIndex)
-            activeY[startIndex:endIndex+1] = [activeYValue]*(endIndex+1-startIndex)
-        line = ax.plot(Y,linewidth=0.5, label=type)
-        legend = ax.legend(loc='upper left', shadow=True, fontsize='medium')
-        # line = ax.plot(Y,'o',linewidth=0.5,label="Onduration",markersize = 1)
-        # plt.setp(line, linewidth=4)
+            if startIndex > endIndex:
+                Y[startIndex:] = [value_Y]*(len(Y)-startIndex)
+                activeY[startIndex:] = [activeYValue] * (len(activeY) - startIndex)
+                if type == "Onduration":
+                    ondurationTmpList.insert(1, ('0','0',endFrame,endSlot))
+                if type == "InActivity":
+                    inactivityTmpList.insert(1, ('0', '0', endFrame, endSlot))
+                if type == "UlRetx":
+                    ulRetxTmpList.insert(1, ('0', '0', endFrame, endSlot))
+                if type == "DlRetx":
+                    dlRetxTmpList.insert(1, ('0', '0', endFrame, endSlot))
+            else:
+                Y[startIndex:endIndex+1] = [value_Y]*(endIndex+1-startIndex)
+                activeY[startIndex:endIndex+1] = [activeYValue]*(endIndex+1-startIndex)
+        ax.plot(Y,linewidth=0.5, label=type)
 
 def Draw(list1, value1, list2, value2, list3, value3,list4,value4,value):
     if len(list1)<=1 and len(list2)<=1 and len(list3)<=1 and len(list4)<=1:
@@ -68,13 +78,15 @@ def Draw(list1, value1, list2, value2, list3, value3,list4,value4,value):
 
     activeY = [value]*1024*20
 
-    DrawList("Onduration",list1,value1,activeY,value,ax)
+    DrawList("Onduration",list1,value1,activeY,value, ax)
     DrawList("InActivity", list2, value2, activeY, value, ax)
     DrawList("UlRetx", list3, value3, activeY, value, ax)
     DrawList("DlRetx", list4, value4, activeY, value, ax)
 
-    line = ax.plot(activeY, linewidth=0.5, label="Active")
-    legend = ax.legend(loc='upper left', shadow=True, fontsize='medium')
+    ax.plot(activeY, linewidth=0.5, label="Active")
+    ax.set_ylim(0,1.1)
+    ax.set(xlabel='TTI time (0~20479)', ylabel='active type', title='DRX')
+    ax.legend(loc='upper left', shadow=True, fontsize='medium')
 
 
 def ClearListData():

@@ -155,7 +155,7 @@
      </rect>
     </property>
     <property name="maximum">
-     <number>1</number>
+     <number>31</number>
     </property>
    </widget>
   </widget>

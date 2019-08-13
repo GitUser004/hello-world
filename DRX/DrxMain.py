@@ -173,6 +173,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     # 界面退出时执行
     def closeEvent(self, *args, **kwargs):
         self.clearAllFigure()
+        self.aboutGui.close()
+        self.ondurationGui.close()
 
 
 if __name__ == "__main__":

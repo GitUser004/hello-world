@@ -1,6 +1,7 @@
 import os, sys
 import matplotlib.pyplot as plt
 from multiprocessing import Process
+from threading import Thread
 from PyQt5 import QtWidgets, uic
 import win32api, win32con
 
@@ -41,22 +42,20 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.menu_file.triggered[QtWidgets.QAction].connect(self.fileMenu)
         self.pushButton_test.clicked.connect(self.test)
 
-        self.statusbar.showMessage("drx状态解析")
+        self.statusbar.showMessage("DRX LOG 解析")
         self.udp.sendToServer("启动")
-
-        # self.pUdp = Process(target=self.receiveFromServerMsg)
-        # self.pUdp.run()
 
         self.startUdpSer()
 
     def startUdpSer(self):
-        self.pUdp = Process(target=self.receiveFromServerMsg,args=())
-        self.pUdp.run()
+        self.t = Thread(target=self.receiveFromServerMsg, args=())
+        self.t.start()
 
     def receiveFromServerMsg(self):
         while True:
-            print("waiting for server message...")
             data = self.udp.receiveFromServer()
+            if data == None:
+                break
             self.statusbar.showMessage(data)
 
     def spinTtiTime(self):

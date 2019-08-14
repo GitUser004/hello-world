@@ -12,7 +12,7 @@ udpSererSocket.bind(ADDR)
 while True:
     print("waiting for message...")
     data, addr = udpSererSocket.recvfrom(BUFSIZE)
-    print(data.decode(), addr)
+    print(data.decode(encoding='UTF-8'), addr)
     # udpSererSocket.sendto(("your message [%s] %s" %(ctime(), data.decode())).encode(), addr)
     # print("receive msaage and return to :",addr)
 

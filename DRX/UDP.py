@@ -1,21 +1,30 @@
 import socket
 
-class UDP():
-    def __init__(self):
-        self.localIp = ""
-        self.localPort = 59386
-        self.localAdder = (self.localIp,self.localPort)
+LOCALIP = ""
+LOCALPORT = 59386
+DESTIP = "10.4.211.37"
+DESTPORT = 50001
 
-        # self.destIp = "10.4.211.37"
-        self.destIp = "192.168.208.129"
-        self.destPort = 50001
-        self.destAddr = (self.destIp,self.destPort)
+
+class UDP:
+    def __init__(self,localIp = LOCALIP,localPort=LOCALPORT,destIp=DESTIP,destPort=DESTPORT):
+        self.localIp = localIp
+        self.localPort = localPort
+        self.localAdder = (self.localIp, self.localPort)
+
+        self.destIp = destIp
+        self.destPort = destPort
+        self.destAddr = (self.destIp, self.destPort)
 
         self.buffSize = 1024
 
         self.udpClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udpSererSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udpSererSocket.bind(self.localAdder)
+
+    def __del__(self):
+        self.udpClientSocket.close()
+        self.udpSererSocket.close()
 
     def sendToServer(self, data):
         self.udpClientSocket.sendto(data.encode(encoding='UTF-8'), self.destAddr)
@@ -27,7 +36,7 @@ class UDP():
         except BaseException:
             print(BaseException)
         else:
-            self.destAddr = (addr[0],self.destPort)
+            self.destAddr = (addr[0], self.destPort)
             print(data.decode(encoding='UTF-8'), addr)
             return data.decode(encoding='UTF-8')
         return None
@@ -35,6 +44,7 @@ class UDP():
     def close(self):
         self.udpClientSocket.close()
         self.udpSererSocket.close()
+
 
 if __name__ == "__main__":
     udp = UDP()

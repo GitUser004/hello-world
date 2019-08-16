@@ -43,7 +43,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_test.clicked.connect(self.test)
 
         self.statusbar.showMessage("DRX LOG 解析")
-        self.udp.sendToServer("启动")
+        self.udp.sendToServer(("[启动] Version: %s") %(VERSION))
 
         self.startUdpSer()
 
@@ -54,7 +54,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def receiveFromServerMsg(self):
         while True:
             data = self.udp.receiveFromServer()
-            if data == None:
+            if data is None:
                 break
             self.statusbar.showMessage(data)
 
@@ -194,7 +194,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clearAllFigure()
         self.aboutGui.close()
         self.ondurationGui.close()
-        self.udp.sendToServer("关闭")
+        self.udp.sendToServer(("[关闭] Version: %s") %(VERSION))
         self.udp.close()
 
 

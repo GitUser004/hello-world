@@ -129,7 +129,7 @@ def printTmpList(textBrowser_output):
 
 def DrxFileParser(fileName,isDrawOnduration,isDrawInactivity,isDrawUlRetx,isDrawDlRetx,textBrowser_output):
     global ondurationList,ondurationTmpList,inactivityList,inactivityTmpList,ulRetxList,ulRetxTmpList,dlRetxList,dlRetxTmpList
-    with open(fileName) as drxFile:
+    with open(fileName, encoding='UTF-8') as drxFile:
         for line in drxFile:
             if isDrawOnduration:
                 ProcFileActivityRange(line,ondurationRegex,ondurationList,ondurationTmpList)
@@ -160,7 +160,8 @@ def DrxLeftDataProc(textBrowser_output):
     Draw(ondurationTmpList, ONDURATION_VALUE, inactivityTmpList, INACTIVITY_VALUE,ulRetxTmpList,ULRETX_VALUE,dlRetxTmpList,DLRETX_VALUE,ACTIVE_VALUE)
 
 if __name__ == "__main__":
-    fileName = "log.txt"
+    # fileName = "log.txt"
+    fileName = "Python打包exe.txt"
     DrxFileParser(fileName,True,True,True,True,None)
     DrxLeftDataProc(None)
     plt.show()

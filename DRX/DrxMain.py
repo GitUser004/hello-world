@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from multiprocessing import Process
 from threading import Thread
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtWidgets import QMessageBox
 import win32api, win32con
 
 from AboutGui import About
@@ -43,7 +44,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_test.clicked.connect(self.test)
 
         self.statusbar.showMessage("DRX LOG 解析")
-        self.udp.sendToServer(("[启动] Version: %s") %(VERSION))
+        self.udp.sendToServer(("[Start] Version:%s") %(VERSION))
 
         self.startUdpSer()
 
@@ -168,6 +169,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         dirName = self.lineEdit_DirName.text().strip()
         if self.radioButton_choseFile.isChecked():
             if not os.path.isfile(fileName):
+                # QMessageBox.warning(self,"警告","文件不存在",QMessageBox.Yes)
                 win32api.MessageBox(0, "文件不存在", "警告", win32con.MB_ICONWARNING)
             else:
                 print(fileName)
@@ -194,7 +196,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clearAllFigure()
         self.aboutGui.close()
         self.ondurationGui.close()
-        self.udp.sendToServer(("[关闭] Version: %s") %(VERSION))
+        self.udp.sendToServer(("[End] Version:%s") %(VERSION))
         self.udp.close()
 
 

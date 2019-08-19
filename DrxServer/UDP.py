@@ -38,8 +38,8 @@ class UDP:
         else:
             self.destAddr = (addr[0], self.destPort)
             print(data.decode(encoding='UTF-8'), addr)
-            return data.decode(encoding='UTF-8')
-        return None
+            return (data.decode(encoding='UTF-8'),addr)
+        return (None,None)
 
     def close(self):
         self.udpClientSocket.close()

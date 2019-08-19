@@ -38,7 +38,7 @@ class UDP:
         else:
             self.destAddr = (addr[0], self.destPort)
             print(data.decode(encoding='UTF-8'), addr)
-            return (data.decode(encoding='UTF-8'),addr)
+            return data.decode(encoding='UTF-8')
         return None
 
     def close(self):

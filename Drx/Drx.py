@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from multiprocessing import Process
 from threading import Thread
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
 import win32api, win32con
 
@@ -20,6 +21,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
+        self.setWindowIcon(QIcon("game.ico"))
         self.setupUi(self)
 
         self.cwd = os.getcwd() + "/log"
@@ -57,7 +59,10 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             data = self.udp.receiveFromServer()
             if data is None:
                 break
-            self.statusbar.showMessage(data)
+            if data == QUERY_DRX_CLIENT_STATE:
+                self.udp.sendToServer(("[Start] Version:%s") % (VERSION))
+            else:
+                self.statusbar.showMessage(data)
 
     def spinTtiTime(self):
         if not self.spinTtiTimeChangeFlag:

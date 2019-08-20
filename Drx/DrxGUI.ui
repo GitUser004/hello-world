@@ -19,6 +19,12 @@
   <property name="windowTitle">
    <string>DRX激活区间</string>
   </property>
+  <property name="iconSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="lineEdit_fileName">
     <property name="geometry">

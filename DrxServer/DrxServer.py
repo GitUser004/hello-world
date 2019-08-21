@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 
 from UDP import UDP
+from DrxDefine import *
 
 
 qtCreatorFile = "DrxServer.ui"  # Enter file here.
@@ -22,8 +23,9 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.udp = UDP()
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-        self.pushButton_start.clicked.connect(self.test_1)
-        self.pushButton_test.clicked.connect(self.test_2)
+        self.pushButton_addItem.clicked.connect(self.test_addItem)
+        self.pushButton_checkState.clicked.connect(self.CheckClientState)
+        self.pushButton_test.clicked.connect(self.test)
 
 
         self.StartRecvClient()
@@ -40,20 +42,42 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
             data,addr = self.udp.receiveFromServer()
             if data is None:
                 break
-            print(data,addr)
             ip = addr[0]
             state = "未知"
+            countAdd = 0
             if "[Start]" in data:
                 state = "在线"
+                if "response" not in data:
+                    countAdd = 1
             elif "[End]" in data:
                 state = "下线"
             pos = data.index("Version")
             version = data[pos+len("Version")+1:]
-            print(ip,state,pos,version)
-            # self.InstertTableItem(ip,version,state,"1")
-            self.ModifyTableItem(ip,version,state)
+            print(ip,state,pos,version,countAdd)
+            self.ModifyTableItem(ip,version,state,countAdd)
 
-    def ModifyTableItem(self,ip,ver,state):
+    def test(self):
+        items=self.tableWidget.selectedItems()
+        if items:
+            item=items[0]
+            print(item.text(),item.row(),item.column())
+
+
+            # item.setSelected(True)
+            # self.tableWidget.verticalScrollBar().setSliderPosition(row)
+
+    def CheckClientState(self):
+        items=self.tableWidget.selectedItems()
+        for item in items:
+            if item.column() == 0:
+                ip = item.text()
+                print(ip)
+                self.udp.sendToServer(QUERY_DRX_CLIENT_STATE,destIp=ip)
+
+
+
+
+    def ModifyTableItem(self,ip,ver,state,countAdd):
         items=self.tableWidget.findItems(ip,Qt.MatchExactly)
         if items:
             item_ip = items[0]
@@ -63,13 +87,11 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
             item_state = self.tableWidget.item(row,2)
             item_state.setText(state)
             item_count = self.tableWidget.item(row,3)
-            if state == "在线":
-                count = int(item_count.text())
-                item_count.setText(str(count+1))
+            count = int(item_count.text())
+            item_count.setText(str(count+countAdd))
             print(("modify:%s,%s,%s,%s")%(item_ip.text(),item_ver.text(),item_state.text(),item_count.text()))
         else:
             self.InstertTableItem(ip,ver,state,"1")
-
 
     def InstertTableItem(self,ip,ver,state,count):
         print(("new item:%s,%s,%s,%s")%(ip,ver,state,count))
@@ -87,27 +109,8 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget.setItem(row, 2, item_state)
         self.tableWidget.setItem(row, 3, item_count)
 
-    def test_2(self):
-        # ip = "10.10.10.10"
-        ip = "123"
-        items=self.tableWidget.findItems(ip,Qt.MatchExactly)
-        if items:
-            item_ip=items[0]
-            row = item_ip.row()
-            print(item_ip.text(),row)
-            item_ver = self.tableWidget.item(row,1)
-            print(item_ver.text(), row)
-            item_state = self.tableWidget.item(row,2)
-            print(item_state.text(), row)
-            item_count = self.tableWidget.item(row,3)
-            print(item_count.text(), row)
 
-
-            # item.setSelected(True)
-            self.tableWidget.verticalScrollBar().setSliderPosition(row)
-
-
-    def test_1(self):
+    def test_addItem(self):
         self.InstertTableItem("123", "234", "345", "1")
 
     def closeEvent(self, *args, **kwargs):

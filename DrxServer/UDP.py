@@ -3,7 +3,7 @@ import socket
 LOCALIP = ""
 LOCALPORT = 50001
 DESTIP = "10.4.211.37"
-DESTPORT = 50001
+DESTPORT = 59386
 
 
 class UDP:
@@ -26,8 +26,8 @@ class UDP:
         self.udpClientSocket.close()
         self.udpSererSocket.close()
 
-    def sendToServer(self, data):
-        self.udpClientSocket.sendto(data.encode(encoding='UTF-8'), self.destAddr)
+    def sendToServer(self, data, destIp=DESTIP, destPort=DESTPORT):
+        self.udpClientSocket.sendto(data.encode(encoding='UTF-8'), (destIp, destPort))
 
     def receiveFromServer(self):
         print("waiting for message...")

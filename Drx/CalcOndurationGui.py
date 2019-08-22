@@ -1,5 +1,5 @@
 import sys
-import win32api,win32con
+from PyQt5.QtGui import QIcon
 from PyQt5 import QtWidgets, uic, QtCore
 
 from DrxDefine import SLOT_PER_FRAME,SLOT_PER_SUBFRAME,MAX_SUBFRAME_PER_FRAME,MAX_SUBFRAME,MAX_TTI_TIME
@@ -15,8 +15,9 @@ class OndurationGui(QtWidgets.QDialog, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
         Ui_MainWindow.__init__(self)
-        self.setupUi(self)
+        self.setWindowIcon(QIcon("drxGui.ico"))
         QtWidgets.QDialog.setWindowFlags(self,QtCore.Qt.WindowCloseButtonHint)
+        self.setupUi(self)
 
         self.comboBox_longCycle.addItems(LongCycle)
         self.comboBox_shortCycle.addItems(ShortCycle)

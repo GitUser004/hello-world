@@ -1,4 +1,5 @@
 import sys
+from PyQt5.QtGui import QIcon
 from PyQt5 import QtWidgets, uic, QtCore
 
 from DrxDefine import VERSION
@@ -12,6 +13,7 @@ class About(QtWidgets.QDialog, Ui_MainWindow):
         QtWidgets.QDialog.__init__(self)
         Ui_MainWindow.__init__(self)
         QtWidgets.QDialog.setWindowFlags(self,QtCore.Qt.WindowCloseButtonHint)
+        self.setWindowIcon(QIcon("drxGui.ico"))
         self.setupUi(self)
 
         self.label_version.setText("Version:" + VERSION)

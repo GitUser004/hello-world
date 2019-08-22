@@ -21,8 +21,11 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
-        self.setWindowIcon(QIcon("game.ico"))
+        self.setWindowIcon(QIcon("drxGui.ico"))
+
         self.setupUi(self)
+
+        self.infomation = "DRX探索预览版，\n正式版本敬请期待！"
 
         self.cwd = os.getcwd() + "/log"
         self.aboutGui = About()
@@ -63,6 +66,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.udp.sendToServer(("[Start] Version:%s") % (VERSION))
             else:
                 self.statusbar.showMessage(data)
+                self.infomation = data
 
     def spinTtiTime(self):
         if not self.spinTtiTimeChangeFlag:
@@ -88,6 +92,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage(q.text())
         if q.text() == "Onduration计算工具":
             self.ondurationGui.show()
+        if q.text() == "打开文件":
+            win32api.MessageBox(0, self.infomation, "提示", win32con.MB_ICONINFORMATION)
+            pass
 
     def test(self):
         a = self.checkBox_onduration.isChecked()

@@ -1,14 +1,12 @@
 import os, sys
-import matplotlib.pyplot as plt
-from multiprocessing import Process
 from threading import Thread
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QHeaderView,QTableWidgetItem
-from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 
-from UDP import UDP
+from UDPServer import UDP
 from DrxDefine import *
+from SendGui import SendGui
 
 
 qtCreatorFile = "DrxServer.ui"  # Enter file here.
@@ -22,11 +20,12 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.udp = UDP()
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.sendGui = SendGui(self.udp, self.tableWidget)
 
         self.pushButton_addItem.clicked.connect(self.test_addItem)
         self.pushButton_checkState.clicked.connect(self.CheckClientState)
+        self.pushButton_send.clicked.connect(self.sendMsg)
         self.pushButton_test.clicked.connect(self.test)
-
 
         self.StartRecvClient()
 
@@ -72,26 +71,7 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
             if item.column() == 0:
                 ip = item.text()
                 print(ip)
-                self.udp.sendToServer(QUERY_DRX_CLIENT_STATE,destIp=ip)
-
-
-
-
-    def ModifyTableItem(self,ip,ver,state,countAdd):
-        items=self.tableWidget.findItems(ip,Qt.MatchExactly)
-        if items:
-            item_ip = items[0]
-            row = item_ip.row()
-            item_ver = self.tableWidget.item(row,1)
-            item_ver.setText(ver)
-            item_state = self.tableWidget.item(row,2)
-            item_state.setText(state)
-            item_count = self.tableWidget.item(row,3)
-            count = int(item_count.text())
-            item_count.setText(str(count+countAdd))
-            print(("modify:%s,%s,%s,%s")%(item_ip.text(),item_ver.text(),item_state.text(),item_count.text()))
-        else:
-            self.InstertTableItem(ip,ver,state,"1")
+                self.udp.sendToServer(QUERY_DRX_CLIENT_STATE, destIp=ip)
 
     def InstertTableItem(self,ip,ver,state,count):
         print(("new item:%s,%s,%s,%s")%(ip,ver,state,count))
@@ -109,12 +89,32 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget.setItem(row, 2, item_state)
         self.tableWidget.setItem(row, 3, item_count)
 
+    def sendMsg(self):
+        self.sendGui.show()
+
 
     def test_addItem(self):
         self.InstertTableItem("123", "234", "345", "1")
 
+    def ModifyTableItem(self,ip,ver,state,countAdd):
+        items=self.tableWidget.findItems(ip,Qt.MatchExactly)
+        if items:
+            item_ip = items[0]
+            row = item_ip.row()
+            item_ver = self.tableWidget.item(row,1)
+            item_ver.setText(ver)
+            item_state = self.tableWidget.item(row,2)
+            item_state.setText(state)
+            item_count = self.tableWidget.item(row,3)
+            count = int(item_count.text())
+            item_count.setText(str(count+countAdd))
+            print(("modify:%s,%s,%s,%s")%(item_ip.text(),item_ver.text(),item_state.text(),item_count.text()))
+        else:
+            self.InstertTableItem(ip,ver,state,"1")
+
     def closeEvent(self, *args, **kwargs):
         self.udp.close()
+        self.sendGui.close()
 
 
 

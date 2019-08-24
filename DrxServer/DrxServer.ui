@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>749</width>
-    <height>620</height>
+    <width>706</width>
+    <height>656</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,13 +42,19 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
         <item>
          <layout class="QGridLayout" name="gridLayout">
           <property name="topMargin">
            <number>30</number>
           </property>
           <property name="rightMargin">
-           <number>30</number>
+           <number>0</number>
           </property>
           <item row="0" column="0">
            <widget class="QTableWidget" name="tableWidget">
@@ -138,52 +144,43 @@
             </column>
            </widget>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="topMargin">
-           <number>30</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_test">
-            <property name="text">
-             <string>测试2</string>
+          <item row="0" column="1">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="topMargin">
+             <number>30</number>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_addItem">
-            <property name="text">
-             <string>添加table</string>
+            <property name="rightMargin">
+             <number>0</number>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>30</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="pushButton_checkState">
-            <property name="text">
-             <string>状态检测</string>
-            </property>
-           </widget>
+            <item row="2" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButton_checkState">
+              <property name="text">
+               <string>状态检测</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButton_test">
+              <property name="text">
+               <string>测试2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButton_addItem">
+              <property name="text">
+               <string>添加table</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButton_send">
+              <property name="text">
+               <string>发送</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -198,7 +195,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>749</width>
+     <width>706</width>
      <height>28</height>
     </rect>
    </property>

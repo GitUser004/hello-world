@@ -63,7 +63,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             if data is None:
                 break
             if data == QUERY_DRX_CLIENT_STATE:
-                self.udp.sendToServer(("[Start] Version:%s") % (VERSION))
+                self.udp.sendToServer(("response [Start] Version:%s") % (VERSION))
             else:
                 self.statusbar.showMessage(data)
                 self.infomation = data

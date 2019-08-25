@@ -152,17 +152,24 @@
             <property name="rightMargin">
              <number>0</number>
             </property>
-            <item row="2" column="1" colspan="2">
+            <item row="3" column="1" colspan="2">
              <widget class="QPushButton" name="pushButton_checkState">
               <property name="text">
                <string>状态检测</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1" colspan="2">
+            <item row="2" column="1" colspan="2">
              <widget class="QPushButton" name="pushButton_test">
               <property name="text">
                <string>测试2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButton_send">
+              <property name="text">
+               <string>发送</string>
               </property>
              </widget>
             </item>
@@ -173,10 +180,10 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1" colspan="2">
-             <widget class="QPushButton" name="pushButton_send">
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_importData">
               <property name="text">
-               <string>发送</string>
+               <string>导入数据</string>
               </property>
              </widget>
             </item>
@@ -196,7 +203,7 @@
      <x>0</x>
      <y>0</y>
      <width>706</width>
-     <height>28</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

@@ -1,11 +1,14 @@
-import os, sys
+import os, sys,csv
 from threading import Thread
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QHeaderView,QTableWidgetItem
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMessageBox
+import win32api, win32con
+from time import sleep
 
 from UDPServer import UDP
-from DrxDefine import *
+from DrxServerDefine import *
 from SendGui import SendGui
 
 
@@ -18,23 +21,36 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
 
+        self.cwd = os.getcwd() + "/data"
         self.udp = UDP()
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.sendGui = SendGui(self.udp, self.tableWidget)
 
         self.pushButton_addItem.clicked.connect(self.test_addItem)
+        self.pushButton_importData.clicked.connect(self.importData)
         self.pushButton_checkState.clicked.connect(self.CheckClientState)
         self.pushButton_send.clicked.connect(self.sendMsg)
         self.pushButton_test.clicked.connect(self.test)
 
         self.StartRecvClient()
+        self.isImportData()
 
 
+    def isImportData(self):
+        self.t_importData = Thread(target=self.isImportDataThread, args=())
+        # self.t_importData.setDaemon(True)
+        self.t_importData.start()
+
+    def isImportDataThread(self):
+        sleep(1)
+        res = win32api.MessageBox(0, "是否导入已有数据？", "提示", win32con.MB_ICONINFORMATION | win32con.MB_YESNO)
+        if res == win32con.IDYES:
+            self.importData()
 
     def StartRecvClient(self):
-        self.t = Thread(target=self.RecvClientMsg, args=())
-        self.t.setDaemon(True)
-        self.t.start()
+        self.t_RecvClientMsg = Thread(target=self.RecvClientMsg, args=())
+        self.t_RecvClientMsg.setDaemon(True)
+        self.t_RecvClientMsg.start()
 
     def RecvClientMsg(self):
         while True:
@@ -110,10 +126,33 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
             item_count.setText(str(count+countAdd))
             print(("modify:%s,%s,%s,%s")%(item_ip.text(),item_ver.text(),item_state.text(),item_count.text()))
         else:
-            self.InstertTableItem(ip,ver,state,"1")
+            self.InstertTableItem(ip,ver,state,str(countAdd))
+
+    def saveClientData(self):
+        with open(FILE, 'w' ,newline="")as f:
+            writer = csv.writer(f)
+            rowNumber = self.tableWidget.rowCount()
+            for row in list(range(rowNumber)):
+                data = []
+                for col in list(range(4)):
+                    data.append(self.tableWidget.item(row, col).text())
+                print(data)
+                writer.writerow(data)
+
+
+    def importData(self):
+        fileName, fileType = QtWidgets.QFileDialog.getOpenFileName(self, "选择数据文件", self.cwd, "All Files (*);;Text Files (*.csv)")
+        if fileName != "":
+            with open(fileName) as f:
+                reader = csv.reader(f)
+                for data in reader:
+                    print(data)
+                    self.ModifyTableItem(data[0],data[1],data[2],int(data[3]))
+
 
     def closeEvent(self, *args, **kwargs):
         self.udp.close()
+        self.saveClientData()
         self.sendGui.close()
 
 

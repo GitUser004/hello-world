@@ -18,6 +18,7 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
 
     importDataSignal = pyqtSignal()
+    updateDataSignal = pyqtSignal()
 
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
@@ -25,11 +26,16 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.cwd = os.getcwd() + "/data"
+        self.recvData = ""
+        self.srcIpaddr = ("","")
+
         self.udp = UDP()
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.sendGui = SendGui(self.udp, self.tableWidget)
 
         self.importDataSignal.connect(self.isImportData)
+        self.updateDataSignal.connect(self.UpdateDate)
+
         self.pushButton_addItem.clicked.connect(self.test_addItem)
         self.pushButton_importData.clicked.connect(self.importData)
         self.pushButton_checkState.clicked.connect(self.CheckClientState)
@@ -69,19 +75,29 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
             data,addr = self.udp.receiveFromServer()
             if data is None:
                 break
-            ip = addr[0]
-            state = "未知"
-            countAdd = 0
-            if "[Start]" in data:
-                state = "在线"
-                if "response" not in data:
-                    countAdd = 1
-            elif "[End]" in data:
-                state = "下线"
-            pos = data.index("Version")
-            version = data[pos+len("Version")+1:]
-            print(ip,state,pos,version,countAdd)
-            self.ModifyTableItem(ip,version,state,countAdd)
+            self.recvData = data
+            self.srcIpaddr = addr
+            self.updateDataSignal.emit()
+
+    def UpdateDate(self):
+        data = self.recvData
+        addr = self.srcIpaddr
+
+        if data is "":
+            return
+        ip = addr[0]
+        state = "未知"
+        countAdd = 0
+        if "[Start]" in data:
+            state = "在线"
+            if "response" not in data:
+                countAdd = 1
+        elif "[End]" in data:
+            state = "下线"
+        pos = data.index("Version")
+        version = data[pos + len("Version") + 1:]
+        print(ip, state, pos, version, countAdd)
+        self.ModifyTableItem(ip, version, state, countAdd)
 
     def test(self):
         items=self.tableWidget.selectedItems()

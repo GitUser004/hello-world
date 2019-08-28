@@ -4,8 +4,9 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QHeaderView,QTableWidgetItem
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
-import win32api, win32con
 from time import sleep
+if sys.platform == "win32":
+    import win32api, win32con
 
 from UDPServer import UDP
 from DrxServerDefine import *

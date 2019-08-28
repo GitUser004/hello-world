@@ -37,8 +37,10 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.importDataSignal.connect(self.isImportData)
         self.updateDataSignal.connect(self.UpdateDate)
 
-        self.pushButton_addItem.clicked.connect(self.test_addItem)
+        self.pushButton_addItem.clicked.connect(self.addItem)
+        self.pushButton_delItem.clicked.connect(self.delItem)
         self.pushButton_importData.clicked.connect(self.importData)
+        self.pushButton_exportData.clicked.connect(self.exportData)
         self.pushButton_checkState.clicked.connect(self.CheckClientState)
         self.pushButton_send.clicked.connect(self.sendMsg)
         self.pushButton_test.clicked.connect(self.test)
@@ -137,8 +139,15 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
     def sendMsg(self):
         self.sendGui.show()
 
-    def test_addItem(self):
-        self.InstertTableItem("123", "234", "345", "1")
+    def addItem(self):
+        self.InstertTableItem("1", "2", "3", "4")
+
+    def delItem(self):
+        items = self.tableWidget.selectedItems()
+        for item in items:
+            if item.column() == QTABLEWIDGET_MAX_COLUMN - 1:
+                row = item.row()
+                self.tableWidget.removeRow(row)
 
     def ModifyTableItem(self,ip,ver,state,countAdd):
         items=self.tableWidget.findItems(ip,Qt.MatchExactly)
@@ -156,11 +165,25 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.InstertTableItem(ip,ver,state,str(countAdd))
 
+    def SaveTableWidgetItemTofile(self, fileName):
+        if fileName ==  "":
+            fileName = FILE
+        print(fileName)
+        with open(fileName, 'w' ,newline="")as f:
+            writer = csv.writer(f)
+            rowNumber = self.tableWidget.rowCount()
+            for row in list(range(rowNumber)):
+                data = []
+                for col in list(range(4)):
+                    data.append(self.tableWidget.item(row, col).text())
+                print(data)
+                writer.writerow(data)
+
     def saveClientData(self):
         row = self.tableWidget.rowCount()
         if row == 0:
             return
-        fileName = FILE
+        fileName = ""
         flag = False
         if sys.platform == "win32":
             res = win32api.MessageBox(0, "是否保存数据？", "提示", win32con.MB_ICONQUESTION | win32con.MB_YESNO)
@@ -173,21 +196,7 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if flag == True:
             fileName, filetype = QtWidgets.QFileDialog.getSaveFileName(self, "文件保存", self.cwd, "All Files (*);;Text Files (*.csv)")
-            if fileName == "":
-                fileName = FILE
-        else:
-            fileName = FILE
-
-        print(fileName)
-        with open(fileName, 'w' ,newline="")as f:
-            writer = csv.writer(f)
-            rowNumber = self.tableWidget.rowCount()
-            for row in list(range(rowNumber)):
-                data = []
-                for col in list(range(4)):
-                    data.append(self.tableWidget.item(row, col).text())
-                print(data)
-                writer.writerow(data)
+        self.SaveTableWidgetItemTofile(fileName)
 
     def importData(self):
         fileName, fileType = QtWidgets.QFileDialog.getOpenFileName(self, "选择数据文件", self.cwd, "All Files (*);;Text Files (*.csv)")
@@ -198,6 +207,13 @@ class DrxServer(QtWidgets.QMainWindow, Ui_MainWindow):
                 for data in reader:
                     print(data)
                     self.ModifyTableItem(data[0],data[1],data[2],int(data[3]))
+
+    def exportData(self):
+        fileName, filetype = QtWidgets.QFileDialog.getSaveFileName(self, "文件保存", self.cwd, "All Files (*);;Text Files (*.csv)")
+        if fileName == "":
+            QMessageBox.critical(self, "错误", "请选择文件！")
+        else:
+            self.SaveTableWidgetItemTofile(fileName)
 
     def closeEvent(self, *args, **kwargs):
         self.udp.close()

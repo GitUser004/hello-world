@@ -178,7 +178,7 @@
    <widget class="QLabel" name="label_TtiTime">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>170</x>
       <y>290</y>
       <width>91</width>
       <height>16</height>
@@ -191,7 +191,7 @@
    <widget class="QLabel" name="label_FrameSlot">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>330</x>
       <y>290</y>
       <width>91</width>
       <height>16</height>
@@ -204,10 +204,10 @@
    <widget class="QLabel" name="label_RadioTime">
     <property name="geometry">
      <rect>
-      <x>500</x>
+      <x>550</x>
       <y>290</y>
-      <width>91</width>
-      <height>16</height>
+      <width>81</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -217,7 +217,7 @@
    <widget class="QSpinBox" name="spinBox_TtiTime">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>160</x>
       <y>310</y>
       <width>111</width>
       <height>22</height>
@@ -230,7 +230,7 @@
    <widget class="QSpinBox" name="spinBox_Frame">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>320</x>
       <y>310</y>
       <width>51</width>
       <height>22</height>
@@ -243,7 +243,7 @@
    <widget class="QSpinBox" name="spinBox_Slot">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>380</x>
       <y>310</y>
       <width>51</width>
       <height>22</height>
@@ -258,12 +258,21 @@
      <rect>
       <x>490</x>
       <y>310</y>
-      <width>111</width>
+      <width>91</width>
       <height>22</height>
      </rect>
     </property>
+    <property name="suffix">
+     <string/>
+    </property>
+    <property name="prefix">
+     <string/>
+    </property>
     <property name="maximum">
      <number>999999999</number>
+    </property>
+    <property name="displayIntegerBase">
+     <number>10</number>
     </property>
    </widget>
    <widget class="QCheckBox" name="checkBox_UlReTx">
@@ -312,6 +321,28 @@
     </property>
     <property name="lineWrapMode">
      <enum>QTextEdit::NoWrap</enum>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_RadioTime_hex">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>310</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="suffix">
+     <string/>
+    </property>
+    <property name="prefix">
+     <string>0x</string>
+    </property>
+    <property name="maximum">
+     <number>999999999</number>
+    </property>
+    <property name="displayIntegerBase">
+     <number>16</number>
     </property>
    </widget>
   </widget>
@@ -365,5 +396,38 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>spinBox_RadioTime_hex</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_RadioTime</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>635</x>
+     <y>343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>535</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox_RadioTime</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_RadioTime_hex</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>535</x>
+     <y>343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>635</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -25,28 +25,27 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        self.infomation = "DRX探索预览版，\n正式版本敬请期待！"
+        self.infomation = "DRX探索版，\n正式版本敬请期待！"
 
         self.cwd = os.getcwd() + "/log"
         self.aboutGui = About()
         self.ondurationGui = OndurationGui()
         self.udp = UDP()
 
-        self.spinTtiTimeChangeFlag = False
-        self.spinFrameSlotChangeFlag = False
-        self.spinRadioTimeChangeFlag = False
-
         self.pushButton_chooseFile.clicked.connect(self.chooseFile)
         self.pushButton_chooseDir.clicked.connect(self.chooseDir)
         self.pushButton_draw.clicked.connect(self.drawDrxPlot)
         self.pushButton_draw_clear.clicked.connect(self.clearAllFigure)
-        self.spinBox_TtiTime.valueChanged.connect(self.spinTtiTime)
-        self.spinBox_Frame.valueChanged.connect(self.spinFrameSlot)
-        self.spinBox_Slot.valueChanged.connect(self.spinFrameSlot)
-        self.spinBox_RadioTime.valueChanged.connect(self.spnRadioTime)
+
+        self.spinBox_TtiTime.valueChanged.connect(lambda : self.spinTimeCalc("tti"))
+        self.spinBox_Frame.valueChanged.connect(lambda : self.spinTimeCalc("frame"))
+        self.spinBox_Slot.valueChanged.connect(lambda : self.spinTimeCalc("slot"))
+        self.spinBox_RadioTime.valueChanged.connect(lambda : self.spinTimeCalc("radio"))
+
         self.menu_help.triggered[QtWidgets.QAction].connect(self.helpMenu)
         self.menu_file.triggered[QtWidgets.QAction].connect(self.fileMenu)
-        self.pushButton_test.clicked.connect(self.test)
+        self.pushButton_test.clicked.connect(lambda: self.test("11"))
+        self.pushButton_test_2.clicked.connect(lambda: self.test("22"))
 
         self.statusbar.showMessage("DRX LOG 解析")
         self.udp.sendToServer(("[Start] Version:%s") %(VERSION))
@@ -68,20 +67,48 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.statusbar.showMessage(data)
                 self.infomation = data
 
-    def spinTtiTime(self):
-        if not self.spinTtiTimeChangeFlag:
+    def spinTimeCalc(self, type):
+        print("type = ", type)
+        if type == "tti":
             ttiTime = self.spinBox_TtiTime.value()
             print("TTI time = %d" % ttiTime)
             frame = ttiTime // SLOT_PER_FRAME
             slot = ttiTime % SLOT_PER_FRAME
             radioTime = (frame << 8) + slot
-
-            self.spinFrameSlotChangeFlag = True
-            self.spinRadioTimeChangeFlag = True
             self.spinBox_Frame.setValue(frame)
             self.spinBox_Slot.setValue(slot)
             self.spinBox_RadioTime.setValue(radioTime)
-        self.spinTtiTimeChangeFlag = False
+
+        if type == "frame" or type == "slot":
+            frame = self.spinBox_Frame.value()
+            slot = self.spinBox_Slot.value()
+            print("Frame = %d, Slot = %d" % (frame, slot))
+            ttiTime = frame * SLOT_PER_FRAME + slot
+            radioTime = (frame << 8) + slot
+            self.spinBox_TtiTime.setValue(ttiTime)
+            self.spinBox_RadioTime.setValue(radioTime)
+
+        if type == "radio":
+            radioTime = self.spinBox_RadioTime.value()
+            print("Radio time = %d" % (radioTime))
+            frame = radioTime >> 8
+            slot = radioTime & 0xFF
+            ttiTime = frame * SLOT_PER_FRAME + slot
+
+            self.spinBox_TtiTime.setValue(ttiTime)
+            self.spinBox_Frame.setValue(frame)
+            self.spinBox_Slot.setValue(slot)
+
+    def test(self, n):
+        a = self.checkBox_onduration.isChecked()
+        b = self.spinBox_TtiTime.value()
+        fileName = self.lineEdit_fileName.text().strip()
+        dirName = self.lineEdit_DirName.text().strip()
+        print(a, b)
+        c = os.path.isfile(fileName)
+        d = os.path.isdir(dirName)
+        print(c, d)
+        self.textBrowser_output.append("Button {0} test".format(n))
 
     def helpMenu(self, q):
         self.statusbar.showMessage(q.text())
@@ -95,47 +122,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if q.text() == "打开文件":
             win32api.MessageBox(0, self.infomation, "提示", win32con.MB_ICONINFORMATION)
             pass
-
-    def test(self):
-        a = self.checkBox_onduration.isChecked()
-        b = self.spinBox_TtiTime.value()
-        fileName = self.lineEdit_fileName.text().strip()
-        dirName = self.lineEdit_DirName.text().strip()
-        print(a, b)
-        c = os.path.isfile(fileName)
-        d = os.path.isdir(dirName)
-        print(c, d)
-        self.textBrowser_output.append("124")
-        # self.startUdpSer()
-
-    def spinFrameSlot(self):
-        if not self.spinFrameSlotChangeFlag:
-            frame = self.spinBox_Frame.value()
-            slot = self.spinBox_Slot.value()
-            print("Frame = %d, Slot = %d" % (frame, slot))
-            ttiTime = frame * SLOT_PER_FRAME + slot
-            radioTime = (frame << 8) + slot
-
-            self.spinTtiTimeChangeFlag = True
-            self.spinRadioTimeChangeFlag = True
-            self.spinBox_TtiTime.setValue(ttiTime)
-            self.spinBox_RadioTime.setValue(radioTime)
-        self.spinFrameSlotChangeFlag = False
-
-    def spnRadioTime(self):
-        if not self.spinRadioTimeChangeFlag:
-            radioTime = self.spinBox_RadioTime.value()
-            print("Radio time = %d" % (radioTime))
-            frame = radioTime >> 8
-            slot = radioTime & 0xFF
-            ttiTime = frame * SLOT_PER_FRAME + slot
-
-            self.spinTtiTimeChangeFlag = True
-            self.spinFrameSlotChangeFlag = True
-            self.spinBox_TtiTime.setValue(ttiTime)
-            self.spinBox_Frame.setValue(frame)
-            self.spinBox_Slot.setValue(slot)
-        self.spinRadioTimeChangeFlag = False
 
     def chooseFile(self):
         fileName, fileType = QtWidgets.QFileDialog.getOpenFileName(self, "选择文件", self.cwd, "All Files (*);;Text Files (*.txt)")

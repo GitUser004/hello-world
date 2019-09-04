@@ -5,7 +5,7 @@ from threading import Thread
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
-import win32api, win32con
+# import win32api, win32con
 
 from AboutGui import About
 from CalcOndurationGui import OndurationGui
@@ -120,8 +120,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if q.text() == "Onduration计算工具":
             self.ondurationGui.show()
         if q.text() == "打开文件":
-            win32api.MessageBox(0, self.infomation, "提示", win32con.MB_ICONINFORMATION)
-            pass
+            QMessageBox.warning(self, "提示", self.infomation, QMessageBox.Ok)
+            # win32api.MessageBox(0, self.infomation, "提示", win32con.MB_ICONINFORMATION)
 
     def chooseFile(self):
         fileName, fileType = QtWidgets.QFileDialog.getOpenFileName(self, "选择文件", self.cwd, "All Files (*);;Text Files (*.txt)")
@@ -167,8 +167,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         dirName = self.lineEdit_DirName.text().strip()
         if self.radioButton_choseFile.isChecked():
             if not os.path.isfile(fileName):
-                # QMessageBox.warning(self,"警告","文件不存在",QMessageBox.Yes)
-                win32api.MessageBox(0, "文件不存在", "警告", win32con.MB_ICONWARNING)
+                QMessageBox.warning(self,"警告","文件不存在!",QMessageBox.Ok)
+                # win32api.MessageBox(0, "文件不存在!", "警告", win32con.MB_ICONWARNING)
             else:
                 print(fileName)
                 self.textBrowser_output.append(fileName)
@@ -176,7 +176,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.p.run()
         elif self.radioButton_choseDir.isChecked():
             if not os.path.exists(dirName):
-                win32api.MessageBox(0, "文件夹不存在", "警告", win32con.MB_ICONWARNING)
+                QMessageBox.warning(self,"警告","文件夹不存在!",QMessageBox.Ok)
+                # win32api.MessageBox(0, "文件夹不存在!", "警告", win32con.MB_ICONWARNING)
             else:
                 print(dirName)
                 self.textBrowser_output.append(dirName)

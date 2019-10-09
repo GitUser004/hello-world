@@ -3,9 +3,6 @@ from PyQt5 import QtCore, uic, QtWidgets
 
 from autoSubmitDailyReportUi import Ui_Form
 
-qtCreatorFile = "autoSubmitDailyReport.ui"  # Enter file here.
-Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
-
 class MyApp(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super(MyApp, self).__init__()

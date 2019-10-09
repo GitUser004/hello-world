@@ -1,17 +1,17 @@
-import sys,threading,time
+import sys,threading,time,pyautogui
 from PyQt5 import QtCore, uic, QtWidgets
-import pyautogui
 
+from autoSubmitDailyReportUi import Ui_Form
 
 qtCreatorFile = "autoSubmitDailyReport.ui"  # Enter file here.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
-class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
+class MyApp(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
-        Ui_MainWindow.__init__(self)
-        QtWidgets.QMainWindow.setWindowFlags(self,QtCore.Qt.WindowMinimizeButtonHint | QtCore.Qt.WindowCloseButtonHint)
+        super(MyApp, self).__init__()
         self.setupUi(self)
+
+        QtWidgets.QWidget.setWindowFlags(self,QtCore.Qt.WindowMinimizeButtonHint | QtCore.Qt.WindowCloseButtonHint)
 
         self.X_lcdNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
         self.Y_lcdNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -112,6 +112,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             threadId = self.timer.ident
             self.timer.cancel()
             print("timer id %d is cancled !" % (threadId))
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

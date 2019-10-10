@@ -5,7 +5,6 @@ from threading import Thread
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
-# import win32api, win32con
 
 from AboutGui import About
 from CalcOndurationGui import OndurationGui
@@ -31,6 +30,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.aboutGui = About()
         self.ondurationGui = OndurationGui()
         self.udp = UDP()
+        self.timeFlag = True
 
         self.pushButton_chooseFile.clicked.connect(self.chooseFile)
         self.pushButton_chooseDir.clicked.connect(self.chooseDir)
@@ -68,36 +68,41 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.infomation = data
 
     def spinTimeCalc(self, type):
-        print("type = ", type)
-        if type == "tti":
-            ttiTime = self.spinBox_TtiTime.value()
-            print("TTI time = %d" % ttiTime)
-            frame = ttiTime // SLOT_PER_FRAME
-            slot = ttiTime % SLOT_PER_FRAME
-            radioTime = (frame << 8) + slot
-            self.spinBox_Frame.setValue(frame)
-            self.spinBox_Slot.setValue(slot)
-            self.spinBox_RadioTime.setValue(radioTime)
+        if self.timeFlag:
+            print("type = ", type)
+            if type == "tti":
+                self.timeFlag = False
+                ttiTime = self.spinBox_TtiTime.value()
+                print("TTI time = %d" % ttiTime)
+                frame = ttiTime // SLOT_PER_FRAME
+                slot = ttiTime % SLOT_PER_FRAME
+                radioTime = (frame << 8) + slot
+                self.spinBox_Frame.setValue(frame)
+                self.spinBox_Slot.setValue(slot)
+                self.spinBox_RadioTime.setValue(radioTime)
 
-        if type == "frame" or type == "slot":
-            frame = self.spinBox_Frame.value()
-            slot = self.spinBox_Slot.value()
-            print("Frame = %d, Slot = %d" % (frame, slot))
-            ttiTime = frame * SLOT_PER_FRAME + slot
-            radioTime = (frame << 8) + slot
-            self.spinBox_TtiTime.setValue(ttiTime)
-            self.spinBox_RadioTime.setValue(radioTime)
+            if type == "frame" or type == "slot":
+                self.timeFlag = False
+                frame = self.spinBox_Frame.value()
+                slot = self.spinBox_Slot.value()
+                print("Frame = %d, Slot = %d" % (frame, slot))
+                ttiTime = frame * SLOT_PER_FRAME + slot
+                radioTime = (frame << 8) + slot
+                self.spinBox_TtiTime.setValue(ttiTime)
+                self.spinBox_RadioTime.setValue(radioTime)
 
-        if type == "radio":
-            radioTime = self.spinBox_RadioTime.value()
-            print("Radio time = %d" % (radioTime))
-            frame = radioTime >> 8
-            slot = radioTime & 0xFF
-            ttiTime = frame * SLOT_PER_FRAME + slot
+            if type == "radio":
+                self.timeFlag = False
+                radioTime = self.spinBox_RadioTime.value()
+                print("Radio time = %d" % (radioTime))
+                frame = radioTime >> 8
+                slot = radioTime & 0xFF
+                ttiTime = frame * SLOT_PER_FRAME + slot
+                self.spinBox_TtiTime.setValue(ttiTime)
+                self.spinBox_Frame.setValue(frame)
+                self.spinBox_Slot.setValue(slot)
 
-            self.spinBox_TtiTime.setValue(ttiTime)
-            self.spinBox_Frame.setValue(frame)
-            self.spinBox_Slot.setValue(slot)
+            self.timeFlag = True
 
     def test(self, n):
         a = self.checkBox_onduration.isChecked()
@@ -120,8 +125,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if q.text() == "Onduration计算工具":
             self.ondurationGui.show()
         if q.text() == "打开文件":
-            QMessageBox.warning(self, "提示", self.infomation, QMessageBox.Ok)
-            # win32api.MessageBox(0, self.infomation, "提示", win32con.MB_ICONINFORMATION)
+            QMessageBox.information(self, "提示", self.infomation, QMessageBox.Ok)
 
     def chooseFile(self):
         fileName, fileType = QtWidgets.QFileDialog.getOpenFileName(self, "选择文件", self.cwd, "All Files (*);;Text Files (*.txt)")
@@ -168,7 +172,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.radioButton_choseFile.isChecked():
             if not os.path.isfile(fileName):
                 QMessageBox.warning(self,"警告","文件不存在!",QMessageBox.Ok)
-                # win32api.MessageBox(0, "文件不存在!", "警告", win32con.MB_ICONWARNING)
             else:
                 print(fileName)
                 self.textBrowser_output.append(fileName)
@@ -177,7 +180,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.radioButton_choseDir.isChecked():
             if not os.path.exists(dirName):
                 QMessageBox.warning(self,"警告","文件夹不存在!",QMessageBox.Ok)
-                # win32api.MessageBox(0, "文件夹不存在!", "警告", win32con.MB_ICONWARNING)
             else:
                 print(dirName)
                 self.textBrowser_output.append(dirName)

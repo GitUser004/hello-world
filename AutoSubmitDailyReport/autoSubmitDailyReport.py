@@ -3,6 +3,7 @@ from PyQt5 import QtCore, uic, QtWidgets
 
 from autoSubmitDailyReportUi import Ui_Form
 
+
 class MyApp(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super(MyApp, self).__init__()
@@ -46,7 +47,8 @@ class MyApp(QtWidgets.QWidget, Ui_Form):
             self.timerOut()
 
     def timerOut(self):
-        print("timeout id %d" %(self.timer.ident))
+        if self.timer:
+            print("timeout id %d" %(self.timer.ident))
         self.label_state.setText("开始提交日报！")
         print('web x, y = %d, %d' % (self.web_x, self.web_y))
         # pyautogui.moveTo(self.web_x, self.web_y, duration=2)

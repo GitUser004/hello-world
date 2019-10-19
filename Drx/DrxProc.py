@@ -2,18 +2,21 @@ import re
 import matplotlib.pyplot as plt
 from DrxDefine import *
 
+ondurationRegexStr = r"# \[OnDuration\] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetOnDurationTimeToShareMem"
+ondurationRegexInit = re.compile(ondurationRegexStr)
+ondurationRegex = ondurationRegexInit
 
-ondurationRegexStr = r"\[OnDuration\] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetOnDurationTimeToShareMem"
-ondurationRegex = re.compile(ondurationRegexStr)
+inActivityRegexStr = r"# \[InActivity\] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetInActivityTimeToShareMem"
+inActivityRegexInit = re.compile(inActivityRegexStr)
+inActivityRegex = inActivityRegexInit
 
-inActivityRegexStr = r"\[InActivity\] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetInActivityTimeToShareMem"
-inActivityRegex = re.compile(inActivityRegexStr)
+ulRetxRegexStr = r"# \[UlRetx    \] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetUlReTxTimeToShareMem"
+ulRetxRegexInit = re.compile(ulRetxRegexStr)
+ulRetxRegex = ulRetxRegexInit
 
-ulRetxRegexStr = r"\[UlRetx    \] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetUlReTxTimeToShareMem"
-ulRetxRegex = re.compile(ulRetxRegexStr)
-
-dlRetxRegexStr = r"\[DlRetx    \] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetDlReTxTimeToShareMem"
-dlRetxRegex = re.compile(dlRetxRegexStr)
+dlRetxRegexStr = r"# \[DlRetx    \] AirTime\[\D*(\d+)\|\D*(\d+)\]->\[\D*(\d+)\|\D*(\d+)\]SetDlReTxTimeToShareMem"
+dlRetxRegexInit = re.compile(dlRetxRegexStr)
+dlRetxRegex = dlRetxRegexInit
 
 ondurationList=[('0','0','0','0')]
 ondurationTmpList=[('0','0','0','0')]
@@ -26,6 +29,32 @@ ulRetxTmpList=[('0', '0', '0', '0')]
 
 dlRetxList=[('0', '0', '0', '0')]
 dlRetxTmpList=[('0', '0', '0', '0')]
+
+def ResetRegex():
+    global ondurationRegexInit,ondurationRegex,inActivityRegexInit,inActivityRegex,ulRetxRegexInit,ulRetxRegex,dlRetxRegexInit,dlRetxRegex
+    ondurationRegex = ondurationRegexInit
+    inActivityRegex = inActivityRegexInit
+    ulRetxRegex = ulRetxRegexInit
+    dlRetxRegex = dlRetxRegexInit
+
+def UpdateRegexWithUeId(ueId):
+    global ondurationRegexStr,ondurationRegex,inActivityRegexStr,inActivityRegex,ulRetxRegexStr,ulRetxRegex,dlRetxRegexStr,dlRetxRegex
+    ueIdStr = "ueId:%4d" % (ueId)
+    ondurationStr = ueIdStr + ondurationRegexStr
+    print(ondurationStr)
+    ondurationRegex = re.compile(ondurationStr)
+
+    inActivityStr = ueIdStr + inActivityRegexStr
+    print(inActivityStr)
+    inActivityRegex = re.compile(inActivityStr)
+
+    ulRetxStr = ueIdStr + ulRetxRegexStr
+    print(ulRetxStr)
+    ulRetxRegex = re.compile(ulRetxStr)
+
+    dlRetxStr = ueIdStr + dlRetxRegexStr
+    print(dlRetxStr)
+    dlRetxRegex = re.compile(dlRetxStr)
 
 
 def ProcFileActivityRange(line,Regex,list,tmpList):

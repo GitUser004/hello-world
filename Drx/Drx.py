@@ -1,15 +1,19 @@
-import os, sys
+import os, sys, re
 import matplotlib.pyplot as plt
 from multiprocessing import Process
 from threading import Thread
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
 
 from AboutGui import About
 from CalcOndurationGui import OndurationGui
 from DrxDefine import *
-from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData
+from DrxProc import DrxFileParser, DrxLeftDataProc, ClearListData, ResetRegex, UpdateRegexWithUeId
+from DrxProc import ondurationRegexStr,ondurationRegexInit,ondurationRegex
+from DrxProc import inActivityRegexStr,inActivityRegexInit,inActivityRegex
+from DrxProc import ulRetxRegexStr,ulRetxRegexInit,ulRetxRegex
+from DrxProc import dlRetxRegexStr,dlRetxRegexInit,dlRetxRegex
 from UDP import UDP
 
 qtCreatorFile = "DrxGUI.ui"  # Enter file here.
@@ -36,6 +40,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_chooseDir.clicked.connect(self.chooseDir)
         self.pushButton_draw.clicked.connect(self.drawDrxPlot)
         self.pushButton_draw_clear.clicked.connect(self.clearAllFigure)
+        self.checkBox_FilterUe.stateChanged.connect(self.updateFilterUeId)
+        self.lineEdit_FilterUeId.textChanged.connect(self.updateFilterUeId)
+
 
         self.spinBox_TtiTime.valueChanged.connect(lambda : self.spinTimeCalc("tti"))
         self.spinBox_Frame.valueChanged.connect(lambda : self.spinTimeCalc("frame"))
@@ -66,6 +73,15 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.statusbar.showMessage(data)
                 self.infomation = data
+
+    def updateFilterUeId(self):
+        if self.checkBox_FilterUe.isChecked() and self.lineEdit_FilterUeId.text():
+            ueId = int(self.lineEdit_FilterUeId.text().strip())
+            print("flter ue id %d" %(ueId))
+            UpdateRegexWithUeId(ueId)
+        else:
+            print("flter ue id None")
+            ResetRegex()
 
     def spinTimeCalc(self, type):
         if self.timeFlag:
